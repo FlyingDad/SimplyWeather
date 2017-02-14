@@ -16,7 +16,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        func checkIfFirstLaunch() {
+            if UserDefaults.standard.bool(forKey: "hasLaunchedBefore") {
+                return
+            } else {
+                print("This is the first launch ever!")
+                UserDefaults.standard.set(true, forKey: "hasLaunchedBefore")
+                UserDefaults.standard.set("Las Vegas", forKey: "city")
+                UserDefaults.standard.synchronize()
+            }
+        }
+        
         return true
     }
 
