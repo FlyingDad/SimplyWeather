@@ -11,6 +11,7 @@ import Foundation
 
 struct OpenWxConstants {
     
+    
     struct Url {
         
         static let BaseURl = "http://api.openweathermap.org/data/2.5/"
@@ -20,7 +21,7 @@ struct OpenWxConstants {
     struct Method {
         
         static let CurrentWx = "weather"
-        static let Forecast5Day = "forecast"
+        static let Forecast = "forecast/daily"
         
     }
 
@@ -31,6 +32,9 @@ struct OpenWxConstants {
         static let CityId = "id"
         static let Units = "units"
         static let Zip = "zip"
+        static let ForecastCount = "cnt"
+        static let longitude = "lon"
+        static let latitude = "lat"
         
     }
 
@@ -39,6 +43,7 @@ struct OpenWxConstants {
         static let APIKEY = "42bd00fbe08ea8184d5edbe2bdf8da54"
         static let UnitsImperial = "imperial"
         static let UnitsCelcius = "metric"
+        static let ForecastCountDays = "7"
         
     }
 
@@ -61,6 +66,17 @@ struct OpenWxConstants {
         static let SystemDict = "sys" // Dict
         static let Sunrise = "sunrise"
         static let Sunset = "sunset"
+        
+        // forecast responses
+        static let Forecastdays = "list"
+        static let Forecastdate = "dt"
+        static let ForecastTemps = "temp"
+        static let ForecastdaytimeTemp = "day"
+        static let ForecastdayLow = "min"
+        static let ForecastdayHigh = "max"
+        static let ForecastWeather = "weather"
+        static let ForecastCondition = "main"
+        static let ForecastIcon = "icon"
         
     }
 
