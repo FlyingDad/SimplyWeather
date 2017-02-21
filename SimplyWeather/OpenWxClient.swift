@@ -58,20 +58,43 @@ final class OpenWxClient {
         ]
         
         let urlString = OpenWxConstants.Url.BaseURl + OpenWxConstants.Method.Forecast
-        //let url = URL(string: urlString + escapedParameters(parameters: methodParameters))!
         let url = urlString + escapedParameters(parameters: methodParameters)
-        //print(url)
+
         Alamofire.request(url).responseJSON { response in
             
             if let json = response.result.value {
                 let json = JSON(json)
-                //print(json)
                 self.parseForecast(json: json)
                 completed(true, nil)
             } else {
                 completed(false, NSError(domain: "getForecast", code: 0, userInfo: nil))
             }
         }
+    }
+    
+    func getDetailedForecast(completed: @escaping (_ result: Bool, _ error: NSError?) -> Void) {
+        
+        let cityId = String(UserDefaults.standard.integer(forKey: "cityId"))
+        let methodParameters = [
+            OpenWxConstants.ParameterKeys.CityId: cityId,
+            OpenWxConstants.ParameterKeys.Units: OpenWxConstants.ParameterValues.UnitsImperial,
+            OpenWxConstants.ParameterKeys.ForecastCount: OpenWxConstants.ParameterValues.DetailedForecastHours,
+            OpenWxConstants.ParameterKeys.APPID: OpenWxConstants.ParameterValues.APIKEY
+        ]
+        
+        let urlString = OpenWxConstants.Url.BaseURl + OpenWxConstants.Method.DetailedForecast
+        let url = urlString + escapedParameters(parameters: methodParameters)
+        Alamofire.request(url).responseJSON { response in
+            
+            if let json = response.result.value {
+                let json = JSON(json)
+                self.parseDetailedForecast(json: json)
+                completed(true, nil)
+            } else {
+                completed(false, NSError(domain: "getDetailedForecast", code: 0, userInfo: nil))
+            }
+        }
+
     }
     
     func parseCurrentWx(json: JSON){
@@ -110,7 +133,6 @@ final class OpenWxClient {
             let currentSunrise = systemDict[OpenWxConstants.ResponseKeys.Sunrise]?.double
             let sunsetString = convertUnixDatetoTime(unixTimestamp: currentSunset!)
             let sunriseString = convertUnixDatetoTime(unixTimestamp: currentSunrise!)
-            //print(sunsetString)
             UserDefaults.standard.set(sunsetString, forKey: "currentSunset")
             UserDefaults.standard.set(sunriseString, forKey: "currentSunrise")
         }
@@ -122,11 +144,9 @@ final class OpenWxClient {
         
         var forecastArray = [[String: AnyObject]]()
         
-        if let forecastDays = json[OpenWxConstants.ResponseKeys.Forecastdays].array {
+        if let forecastDay = json[OpenWxConstants.ResponseKeys.Forecastdays].array {
             
-            //print(forecastDays?.count)
-            
-            for eachday in forecastDays {
+            for eachday in forecastDay {
                 var dayDict = [String: AnyObject]()
                 let date = eachday[OpenWxConstants.ResponseKeys.Forecastdate].double
                 dayDict["dayOfWeek"] = self.convertUnixDatetoDay(unixTimestamp: date!) as AnyObject?
@@ -152,6 +172,38 @@ final class OpenWxClient {
                 forecastArray.append(dayDict)
             }
             UserDefaults.standard.set(forecastArray, forKey: "forecastArray")
+        }
+    }
+
+    
+    func parseDetailedForecast(json: JSON) {
+        
+        var detailedForecastArray = [[String: AnyObject]]()
+        
+        if let forecastHour = json[OpenWxConstants.ResponseKeys.Forecastdays].array {
+            
+            for eachhour in forecastHour {
+                var hourDict = [String: AnyObject]()
+                let date = eachhour[OpenWxConstants.ResponseKeys.Forecastdate].double
+                hourDict["hour"] = self.convertUnixDatetoTime(unixTimestamp: date!) as AnyObject?
+            
+                guard let hourlyTemps = eachhour[OpenWxConstants.ResponseKeys.ForecastCondition].dictionary else {
+                    print("Fail to get detailed forecst temps")
+                    return
+                }
+                let temp = hourlyTemps[OpenWxConstants.ResponseKeys.ForecastTemps]?.double
+                hourDict["temp"] = convertDoubleToString(number:temp!, decimalPoints: 0) as AnyObject?
+                
+                guard let weatherArr = eachhour[OpenWxConstants.ResponseKeys.ForecastWeather].array else {
+                    print("Fail to get detailed forecst weather")
+                    return
+                }
+                let weatherDict = weatherArr[0]
+                hourDict["condition"] = weatherDict[OpenWxConstants.ResponseKeys.ForecastCondition].string as AnyObject?
+                hourDict["icon"] = weatherDict[OpenWxConstants.ResponseKeys.ForecastIcon].string as AnyObject?
+                detailedForecastArray.append(hourDict)
+            }
+            UserDefaults.standard.set(detailedForecastArray, forKey: "detailedForecastArray")
         }
     }
     

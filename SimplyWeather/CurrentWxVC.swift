@@ -40,9 +40,15 @@ class CurrentWxVC: UIViewController, UITableViewDelegate, UITableViewDataSource,
         locationManager.requestWhenInUseAuthorization()
         locationManager.startMonitoringSignificantLocationChanges()
         
+        // Load previous data if the app has been used before
+        if UserDefaults.standard.bool(forKey: "hasLaunchedBefore") {
+            updateCurrentWxUI()
+            updateForeCastTable()
+        }
         locationAuthStatus()
         
     }
+    
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1

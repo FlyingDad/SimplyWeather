@@ -22,6 +22,7 @@ struct OpenWxConstants {
         
         static let CurrentWx = "weather"
         static let Forecast = "forecast/daily"
+        static let DetailedForecast = "forecast"
         
     }
 
@@ -44,6 +45,7 @@ struct OpenWxConstants {
         static let UnitsImperial = "imperial"
         static let UnitsCelcius = "metric"
         static let ForecastCountDays = "7"
+        static let DetailedForecastHours = "10"
         
     }
 
@@ -78,6 +80,7 @@ struct OpenWxConstants {
         static let ForecastCondition = "main"
         static let ForecastIcon = "icon"
         
+
     }
 
     struct ResponseValues {

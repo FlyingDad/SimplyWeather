@@ -11,10 +11,9 @@ import UIKit
 class DetailForecastCell: UITableViewCell {
 
     @IBOutlet weak var iconImage: UIImageView!
-    @IBOutlet weak var dayOfWeek: UILabel!
-    @IBOutlet weak var highTemp: UILabel!
-    @IBOutlet weak var lowTemp: UILabel!
     @IBOutlet weak var forecastLabel: UILabel!
+    @IBOutlet weak var temp: UILabel!
+    @IBOutlet weak var hour: UILabel!
 
 
 }

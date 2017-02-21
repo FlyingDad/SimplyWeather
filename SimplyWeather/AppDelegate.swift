@@ -14,20 +14,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
+    func checkIfFirstLaunch() {
+        if UserDefaults.standard.bool(forKey: "hasLaunchedBefore") {
+            return
+        } else {
+            print("This is the first launch ever!")
+            UserDefaults.standard.set(true, forKey: "hasLaunchedBefore")
+            UserDefaults.standard.set("Las Vegas", forKey: "city")
+            UserDefaults.standard.synchronize()
+        }
+    }
+
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
-        func checkIfFirstLaunch() {
-            if UserDefaults.standard.bool(forKey: "hasLaunchedBefore") {
-                return
-            } else {
-                print("This is the first launch ever!")
-                UserDefaults.standard.set(true, forKey: "hasLaunchedBefore")
-                UserDefaults.standard.set("Las Vegas", forKey: "city")
-                UserDefaults.standard.synchronize()
-            }
-        }
-        
+        checkIfFirstLaunch()
         return true
     }
 
